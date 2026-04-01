@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { LogOut } from "lucide-react";
+import { LogOut, User, Package, Compass } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { signOut } from "@/actions/auth";
 
@@ -30,10 +30,34 @@ export default async function DashboardLayout({ children }: { children: React.Re
             </span>
           </Link>
 
-          <div className="flex items-center gap-3">
-            <span className="text-[11px] text-ink-3 font-mono hidden sm:block truncate max-w-48">
+          <div className="flex items-center gap-2">
+            <Link
+              href="/explore"
+              className="flex items-center gap-1.5 text-xs text-ink-3 hover:text-ink-1 px-3 py-1.5 rounded-lg hover:bg-field-elevated transition-colors font-mono uppercase tracking-wider border border-transparent hover:border-field-border"
+              title="Explore public lists"
+            >
+              <Compass className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">Explore</span>
+            </Link>
+            <Link
+              href="/dashboard/closet"
+              className="flex items-center gap-1.5 text-xs text-ink-3 hover:text-ink-1 px-3 py-1.5 rounded-lg hover:bg-field-elevated transition-colors font-mono uppercase tracking-wider border border-transparent hover:border-field-border"
+              title="Gear closet"
+            >
+              <Package className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">Closet</span>
+            </Link>
+            <span className="text-[11px] text-ink-3 font-mono hidden lg:block truncate max-w-40">
               {user.email}
             </span>
+            <Link
+              href="/dashboard/account"
+              className="flex items-center gap-1.5 text-xs text-ink-3 hover:text-ink-1 px-3 py-1.5 rounded-lg hover:bg-field-elevated transition-colors font-mono uppercase tracking-wider border border-transparent hover:border-field-border"
+              title="Account settings"
+            >
+              <User className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">Account</span>
+            </Link>
             <form action={signOut}>
               <button
                 type="submit"

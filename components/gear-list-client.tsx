@@ -4,6 +4,8 @@ import { useState, useTransition, useEffect, useCallback, useRef, useMemo } from
 import Link from "next/link";
 import {
   Plus, ChevronLeft, Trash2, Pencil, X, Check, Package, GripVertical, FolderPlus,
+  Share2, Link2, BarChart2, List, Copy, Printer, Search, Target,
+  CheckSquare, Square,
 } from "lucide-react";
 import {
   DndContext, DragOverlay, PointerSensor, useSensor, useSensors, closestCenter,
@@ -19,7 +21,10 @@ import {
 } from "@/lib/utils";
 import type { GearList, GearItem, WeightUnit } from "@/lib/types";
 import { createItem, updateItem, deleteItem, reorderItems, moveItemToList } from "@/actions/items";
-import { deleteList, updateCategoryOrder } from "@/actions/lists";
+import { deleteList, updateCategoryOrder, setListPublic, duplicateList, updateWeightTarget } from "@/actions/lists";
+import { ListCharts } from "@/components/list-charts";
+import { ClosetPickerModal } from "@/components/closet-picker";
+import { convertWeight } from "@/lib/utils";
 
 const WEIGHT_UNITS: WeightUnit[] = ["g", "oz", "lb", "kg"];
 
@@ -184,10 +189,10 @@ function EditItemModal({ item, unit, categories, isPending, onSave, onClose }: {
 
 // ─── Sortable item row ────────────────────────────────────────────────────────
 
-function SortableItemRow({ item, unit, deleteConfirmId, isPending, onEdit, onDeleteClick, onDeleteConfirm, onDeleteCancel, overlay }: {
+function SortableItemRow({ item, unit, deleteConfirmId, isPending, onEdit, onDeleteClick, onDeleteConfirm, onDeleteCancel, overlay, isSelecting, isSelected, onSelect }: {
   item: GearItem; unit: WeightUnit; deleteConfirmId: string | null; isPending: boolean;
   onEdit: () => void; onDeleteClick: () => void; onDeleteConfirm: () => void; onDeleteCancel: () => void;
-  overlay?: boolean;
+  overlay?: boolean; isSelecting?: boolean; isSelected?: boolean; onSelect?: (checked: boolean) => void;
 }) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: item.id });
   const style = { transform: CSS.Transform.toString(transform), transition, opacity: isDragging ? 0.25 : 1 };
@@ -207,10 +212,16 @@ function SortableItemRow({ item, unit, deleteConfirmId, isPending, onEdit, onDel
     <tr ref={setNodeRef} style={style}
       className="border-b border-field-border/50 last:border-0 hover:bg-field-elevated/50 transition-colors group/row">
       <td className="px-2 py-3 w-6">
-        <button {...attributes} {...listeners}
-          className="cursor-grab active:cursor-grabbing text-ink-3 hover:text-volt touch-none transition-colors" tabIndex={-1}>
-          <GripVertical className="w-3.5 h-3.5" />
-        </button>
+        {isSelecting ? (
+          <button onClick={() => onSelect?.(!isSelected)} className="text-ink-3 hover:text-volt transition-colors">
+            {isSelected ? <CheckSquare className="w-3.5 h-3.5 text-volt" /> : <Square className="w-3.5 h-3.5" />}
+          </button>
+        ) : (
+          <button {...attributes} {...listeners}
+            className="cursor-grab active:cursor-grabbing text-ink-3 hover:text-volt touch-none transition-colors" tabIndex={-1}>
+            <GripVertical className="w-3.5 h-3.5" />
+          </button>
+        )}
       </td>
       <td className="px-4 py-3">
         <div className="flex flex-wrap items-center gap-1.5">
@@ -341,6 +352,16 @@ export function GearListClient({ list, otherLists = [] }: {
 
   const [showNewCategoryForm, setShowNewCategoryForm] = useState(false);
   const [newCategoryName, setNewCategoryName] = useState("");
+  const [isPublic, setIsPublic] = useState(list.is_public ?? false);
+  const [activeView, setActiveView] = useState<"items" | "charts">("items");
+  const [copyDone, setCopyDone] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [isSelecting, setIsSelecting] = useState(false);
+  const [showClosetPicker, setShowClosetPicker] = useState(false);
+  const [weightTarget, setWeightTarget] = useState<number | null>(list.weight_target_grams ?? null);
+  const [editingTarget, setEditingTarget] = useState(false);
+  const [targetInput, setTargetInput] = useState("");
 
   useEffect(() => {
     const newItems = list.gear_items ?? [];
@@ -361,7 +382,19 @@ export function GearListClient({ list, otherLists = [] }: {
   const changeUnit = (u: WeightUnit) => { setUnit(u); localStorage.setItem("tw-unit", u); };
 
   const stats = computeListStats(items);
-  const grouped = groupItemsByCategory(items);
+
+  const filteredItems = useMemo(() => {
+    const q = searchQuery.toLowerCase().trim();
+    if (!q) return items;
+    return items.filter(
+      (i) =>
+        i.name.toLowerCase().includes(q) ||
+        i.category.toLowerCase().includes(q) ||
+        i.description?.toLowerCase().includes(q)
+    );
+  }, [items, searchQuery]);
+
+  const grouped = groupItemsByCategory(filteredItems);
   const existingCats = Object.keys(grouped);
   const allCategories = Array.from(new Set([...SUGGESTED_CATEGORIES, ...existingCats, ...categoryOrder]));
 
@@ -520,6 +553,70 @@ export function GearListClient({ list, otherLists = [] }: {
     startTransition(async () => { await deleteList(list.id); });
   };
 
+  const handleTogglePublic = () => {
+    const next = !isPublic;
+    setIsPublic(next);
+    startTransition(async () => {
+      try { await setListPublic(list.id, next); }
+      catch { setIsPublic(!next); }
+    });
+  };
+
+  const handleCopyLink = async () => {
+    await navigator.clipboard.writeText(`${window.location.origin}/share/${list.id}`);
+    setCopyDone(true);
+    setTimeout(() => setCopyDone(false), 2000);
+  };
+
+  const handleDuplicate = () => {
+    startTransition(async () => { await duplicateList(list.id); });
+  };
+
+  const handlePrint = () => window.print();
+
+  const handleBulkDelete = () => {
+    if (!confirm(`Delete ${selectedIds.size} item(s)? This cannot be undone.`)) return;
+    const ids = Array.from(selectedIds);
+    setItems((prev) => prev.filter((i) => !selectedIds.has(i.id)));
+    setSelectedIds(new Set()); setIsSelecting(false);
+    startTransition(async () => {
+      await Promise.all(ids.map((id) => import("@/actions/items").then((m) => m.deleteItem(id, list.id))));
+    });
+  };
+
+  const handleBulkCategoryChange = (category: string) => {
+    const ids = Array.from(selectedIds);
+    setItems((prev) => prev.map((i) => selectedIds.has(i.id) ? { ...i, category } : i));
+    setSelectedIds(new Set()); setIsSelecting(false);
+    startTransition(async () => {
+      await Promise.all(
+        ids.map((id) => {
+          const item = items.find((i) => i.id === id);
+          if (!item) return Promise.resolve();
+          return import("@/actions/items").then((m) =>
+            m.updateItem(id, list.id, { ...item, category })
+          );
+        })
+      );
+    });
+  };
+
+  const handleSetWeightTarget = (e: React.FormEvent) => {
+    e.preventDefault();
+    const grams = unitToGrams(parseFloat(targetInput) || 0, unit);
+    const target = grams > 0 ? Math.round(grams) : null;
+    setWeightTarget(target); setEditingTarget(false);
+    startTransition(async () => { await updateWeightTarget(list.id, target); });
+  };
+
+  const toggleSelect = (id: string, checked: boolean) => {
+    setSelectedIds((prev) => {
+      const next = new Set(prev);
+      checked ? next.add(id) : next.delete(id);
+      return next;
+    });
+  };
+
   const openAddFormForCategory = (category: string) => {
     setAddForm({ ...emptyForm, category }); setShowAddForm(true);
   };
@@ -545,10 +642,47 @@ export function GearListClient({ list, otherLists = [] }: {
               <p className="text-ink-3 text-xs mt-1.5 font-mono">{list.description}</p>
             )}
           </div>
-          <button onClick={handleDeleteList} disabled={isPending}
-            className="flex-shrink-0 p-2 text-ink-3 hover:text-red-400 hover:bg-red-900/20 rounded-lg transition-colors" title="Delete list">
-            <Trash2 className="w-4 h-4" />
-          </button>
+          <div className="flex items-center gap-2 flex-shrink-0 no-print">
+            {/* Duplicate */}
+            <button onClick={handleDuplicate} disabled={isPending} title="Duplicate list"
+              className="p-2 text-ink-3 hover:text-ink-1 hover:bg-field-elevated rounded-lg transition-colors border border-transparent hover:border-field-border">
+              <Copy className="w-4 h-4" />
+            </button>
+            {/* Print */}
+            <button onClick={handlePrint} title="Print / Export PDF"
+              className="p-2 text-ink-3 hover:text-ink-1 hover:bg-field-elevated rounded-lg transition-colors border border-transparent hover:border-field-border">
+              <Printer className="w-4 h-4" />
+            </button>
+            {/* Share toggle */}
+            <button
+              onClick={handleTogglePublic}
+              disabled={isPending}
+              title={isPublic ? "Make private" : "Make public & shareable"}
+              className={`flex items-center gap-1.5 text-xs font-mono px-3 py-1.5 rounded-lg border transition-colors uppercase tracking-wider ${
+                isPublic
+                  ? "bg-volt-muted border-volt/40 text-volt hover:bg-ember-muted hover:border-ember/40 hover:text-ember"
+                  : "border-field-border text-ink-3 hover:text-ink-1 hover:bg-field-elevated"
+              }`}
+            >
+              <Share2 className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">{isPublic ? "Public" : "Share"}</span>
+            </button>
+            {/* Copy link (only when public) */}
+            {isPublic && (
+              <button
+                onClick={handleCopyLink}
+                title="Copy share link"
+                className="flex items-center gap-1.5 text-xs font-mono px-3 py-1.5 rounded-lg border border-field-border text-ink-3 hover:text-volt hover:border-volt/40 hover:bg-field-elevated transition-colors uppercase tracking-wider"
+              >
+                {copyDone ? <Check className="w-3.5 h-3.5 text-volt" /> : <Link2 className="w-3.5 h-3.5" />}
+                <span className="hidden sm:inline">{copyDone ? "Copied!" : "Copy Link"}</span>
+              </button>
+            )}
+            <button onClick={handleDeleteList} disabled={isPending}
+              className="p-2 text-ink-3 hover:text-red-400 hover:bg-red-900/20 rounded-lg transition-colors" title="Delete list">
+              <Trash2 className="w-4 h-4" />
+            </button>
+          </div>
         </div>
       </div>
 
@@ -573,24 +707,129 @@ export function GearListClient({ list, otherLists = [] }: {
         ))}
       </div>
 
-      {/* Controls */}
+      {/* Weight target */}
+      {(weightTarget || editingTarget) && (
+        <div className="mb-4 bg-field-card border border-field-border rounded-xl px-4 py-3 no-print">
+          {editingTarget ? (
+            <form onSubmit={handleSetWeightTarget} className="flex items-center gap-2">
+              <Target className="w-3.5 h-3.5 text-volt flex-shrink-0" />
+              <span className="text-[10px] font-mono uppercase tracking-wider text-ink-3">Base Weight Target</span>
+              <input type="number" min="0" step="any" value={targetInput}
+                onChange={(e) => setTargetInput(e.target.value)}
+                placeholder={`e.g. 10`}
+                className="w-20 px-2 py-1 text-xs bg-field-surface border border-volt/40 rounded-md text-ink-1 focus:outline-none focus:ring-1 focus:ring-volt font-mono"
+                autoFocus />
+              <span className="text-[10px] font-mono text-ink-3">{unit}</span>
+              <button type="submit" className="text-[10px] font-mono text-volt hover:text-volt-dim uppercase tracking-wider">Set</button>
+              <button type="button" onClick={() => setEditingTarget(false)} className="text-[10px] font-mono text-ink-3 hover:text-ink-1 uppercase tracking-wider">Cancel</button>
+            </form>
+          ) : weightTarget && (
+            <div>
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center gap-2">
+                  <Target className="w-3.5 h-3.5 text-volt" />
+                  <span className="text-[10px] font-mono uppercase tracking-wider text-ink-3">Base Weight Target</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <span className="text-xs font-mono text-ink-2">
+                    {formatWeight(stats.baseWeightGrams, unit)} / {formatWeight(weightTarget, unit)}
+                  </span>
+                  <span className={`text-xs font-mono font-bold ${stats.baseWeightGrams <= weightTarget ? "text-volt" : "text-ember"}`}>
+                    {stats.baseWeightGrams <= weightTarget
+                      ? `${formatWeight(weightTarget - stats.baseWeightGrams, unit)} under`
+                      : `${formatWeight(stats.baseWeightGrams - weightTarget, unit)} over`}
+                  </span>
+                  <button onClick={() => { setEditingTarget(true); setTargetInput(String(convertWeight(weightTarget, unit).toFixed(2))); }}
+                    className="text-[10px] font-mono text-ink-3 hover:text-volt uppercase tracking-wider">Edit</button>
+                </div>
+              </div>
+              <div className="h-1 bg-field-elevated rounded-full overflow-hidden">
+                <div className={`h-full rounded-full transition-all ${stats.baseWeightGrams <= weightTarget ? "bg-volt" : "bg-ember"}`}
+                  style={{ width: `${Math.min(100, (stats.baseWeightGrams / weightTarget) * 100)}%` }} />
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+      {!weightTarget && !editingTarget && (
+        <button onClick={() => { setEditingTarget(true); setTargetInput(""); }}
+          className="mb-4 flex items-center gap-1.5 text-[10px] font-mono text-ink-3 hover:text-volt uppercase tracking-wider transition-colors no-print">
+          <Target className="w-3 h-3" />
+          Set weight target
+        </button>
+      )}
+
+      {/* View tabs */}
+      <div className="flex items-center gap-1 bg-field-surface border border-field-border rounded-lg p-1 mb-4 w-fit">
+        {(["items", "charts"] as const).map((view) => (
+          <button
+            key={view}
+            onClick={() => setActiveView(view)}
+            className={`flex items-center gap-1.5 px-4 py-1.5 rounded-md text-xs font-mono uppercase tracking-wider transition-colors ${
+              activeView === view
+                ? "bg-field-elevated text-volt border border-field-border-strong shadow-sm"
+                : "text-ink-3 hover:text-ink-2"
+            }`}
+          >
+            {view === "items" ? <List className="w-3 h-3" /> : <BarChart2 className="w-3 h-3" />}
+            {view}
+          </button>
+        ))}
+      </div>
+
+      {/* Charts view */}
+      {activeView === "charts" && <ListCharts items={items} unit={unit} />}
+
+      {/* Items view content */}
+      <div className={activeView !== "items" ? "hidden" : ""}>
+      {/* Search bar */}
+      <div className="relative mb-3 no-print">
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-ink-3 pointer-events-none" />
+        <input
+          type="text" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)}
+          placeholder="Search items..."
+          className="w-full pl-9 pr-3 py-2 text-sm bg-field-card border border-field-border rounded-lg text-ink-1 placeholder-ink-3 focus:outline-none focus:ring-2 focus:ring-volt focus:border-volt font-mono"
+        />
+        {searchQuery && (
+          <button onClick={() => setSearchQuery("")} className="absolute right-3 top-1/2 -translate-y-1/2 text-ink-3 hover:text-ink-1">
+            <X className="w-3.5 h-3.5" />
+          </button>
+        )}
+      </div>
+
       <div className="flex items-center justify-between mb-4 gap-3">
-        <div className="flex items-center gap-0.5 bg-field-surface border border-field-border rounded-lg p-1">
-          {WEIGHT_UNITS.map((u) => (
-            <button key={u} onClick={() => changeUnit(u)}
-              className={`px-3 py-1.5 rounded-md text-xs font-mono uppercase tracking-wider transition-colors ${u === unit ? "bg-field-elevated text-volt border border-field-border-strong shadow-sm" : "text-ink-3 hover:text-ink-2"}`}>
-              {u}
-            </button>
-          ))}
+        <div className="flex items-center gap-1.5">
+          <div className="flex items-center gap-0.5 bg-field-surface border border-field-border rounded-lg p-1">
+            {WEIGHT_UNITS.map((u) => (
+              <button key={u} onClick={() => changeUnit(u)}
+                className={`px-3 py-1.5 rounded-md text-xs font-mono uppercase tracking-wider transition-colors ${u === unit ? "bg-field-elevated text-volt border border-field-border-strong shadow-sm" : "text-ink-3 hover:text-ink-2"}`}>
+                {u}
+              </button>
+            ))}
+          </div>
+          <button
+            onClick={() => { setIsSelecting((v) => !v); setSelectedIds(new Set()); }}
+            className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-mono uppercase tracking-wider border transition-colors no-print ${isSelecting ? "border-volt/40 text-volt bg-volt-muted" : "border-field-border text-ink-3 hover:text-ink-1 hover:bg-field-elevated"}`}
+          >
+            <CheckSquare className="w-3.5 h-3.5" />
+            <span className="hidden sm:inline">{isSelecting ? "Cancel" : "Select"}</span>
+          </button>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 no-print">
           <button
             onClick={() => { setNewCategoryName(""); setShowNewCategoryForm(true); }}
             className="inline-flex items-center gap-1.5 text-ink-2 hover:text-ink-1 border border-field-border hover:border-field-border-strong bg-field-card hover:bg-field-elevated text-xs font-mono px-3 py-2 rounded-lg transition-colors uppercase tracking-wider flex-shrink-0"
           >
             <FolderPlus className="w-3.5 h-3.5" />
-            New Category
+            <span className="hidden sm:inline">New Category</span>
+          </button>
+          <button
+            onClick={() => { setShowClosetPicker(true); }}
+            className="inline-flex items-center gap-1.5 text-ink-2 hover:text-ink-1 border border-field-border hover:border-field-border-strong bg-field-card hover:bg-field-elevated text-xs font-mono px-3 py-2 rounded-lg transition-colors uppercase tracking-wider flex-shrink-0"
+          >
+            <Package className="w-3.5 h-3.5" />
+            <span className="hidden sm:inline">From Closet</span>
           </button>
           <button
             onClick={() => { setAddForm(emptyForm); setShowAddForm(true); }}
@@ -704,6 +943,9 @@ export function GearListClient({ list, otherLists = [] }: {
                                   onDeleteClick={() => setDeleteConfirmId(item.id)}
                                   onDeleteConfirm={() => handleDelete(item.id)}
                                   onDeleteCancel={() => setDeleteConfirmId(null)}
+                                  isSelecting={isSelecting}
+                                  isSelected={selectedIds.has(item.id)}
+                                  onSelect={(checked) => toggleSelect(item.id, checked)}
                                 />
                               ))}
                             </tbody>
@@ -779,6 +1021,55 @@ export function GearListClient({ list, otherLists = [] }: {
             )}
           </DragOverlay>
         </DndContext>
+      )}
+      </div>{/* end items view */}
+
+      {/* Bulk action bar */}
+      {isSelecting && selectedIds.size > 0 && (
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 bg-field-elevated border border-field-border-strong rounded-2xl shadow-2xl px-5 py-3 flex items-center gap-4 no-print">
+          <span className="text-xs font-mono text-ink-2">{selectedIds.size} selected</span>
+          <div className="flex items-center gap-2">
+            <select
+              onChange={(e) => { if (e.target.value) { handleBulkCategoryChange(e.target.value); e.target.value = ""; } }}
+              className="text-xs font-mono bg-field-surface border border-field-border rounded-lg px-2 py-1.5 text-ink-2 focus:outline-none focus:ring-1 focus:ring-volt"
+              defaultValue=""
+            >
+              <option value="" disabled>Move to category...</option>
+              {allCategories.slice(0, 20).map((c) => <option key={c} value={c}>{c}</option>)}
+            </select>
+            <button onClick={handleBulkDelete}
+              className="flex items-center gap-1.5 text-xs font-mono text-ember hover:text-ember/80 px-3 py-1.5 border border-ember/30 rounded-lg hover:bg-ember-muted transition-colors uppercase tracking-wider">
+              <Trash2 className="w-3.5 h-3.5" />
+              Delete
+            </button>
+            <button onClick={() => { setSelectedIds(new Set()); setIsSelecting(false); }}
+              className="text-xs font-mono text-ink-3 hover:text-ink-1 px-2 py-1.5 rounded-lg hover:bg-field-elevated transition-colors">
+              <X className="w-3.5 h-3.5" />
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Closet picker modal */}
+      {showClosetPicker && (
+        <ClosetPickerModal
+          unit={unit}
+          onSelect={(closetItem) => {
+            setAddForm({
+              name: closetItem.name,
+              description: closetItem.description ?? "",
+              category: closetItem.category,
+              weight: gramsToUnit(closetItem.weight_grams, unit),
+              cost: closetItem.cost_cents > 0 ? (closetItem.cost_cents / 100).toFixed(2) : "",
+              quantity: "1",
+              worn: false,
+              consumable: false,
+            });
+            setShowClosetPicker(false);
+            setShowAddForm(true);
+          }}
+          onClose={() => setShowClosetPicker(false)}
+        />
       )}
 
       {editingItem && (

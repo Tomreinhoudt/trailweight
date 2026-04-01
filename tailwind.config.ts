@@ -27,9 +27,9 @@ const config: Config = {
           muted: "#351508",
         },
         ink: {
-          1: "#E4EDE0",
-          2: "#6A8C6C",
-          3: "#3A5040",
+          1: "#E8F0E4",
+          2: "#9BBF9D",
+          3: "#627A64",
         },
       },
       fontFamily: {

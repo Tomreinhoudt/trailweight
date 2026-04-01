@@ -32,3 +32,18 @@
 .volt-glow {
   text-shadow: 0 0 24px rgba(200, 237, 64, 0.35);
 }
+
+@media print {
+  nav, .no-print { display: none !important; }
+  body { background: white !important; color: #111 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .bg-field-bg, .bg-field-surface, .bg-field-card, .bg-field-elevated { background: white !important; }
+  .text-volt, .volt-glow { color: #5a8f00 !important; text-shadow: none !important; }
+  .text-ink-1 { color: #111 !important; }
+  .text-ink-2 { color: #444 !important; }
+  .text-ink-3 { color: #777 !important; }
+  .border-field-border { border-color: #ddd !important; }
+  .bg-volt-muted { background: #f0f7d0 !important; }
+  .bg-ember-muted { background: #fff0e8 !important; }
+  .text-ember { color: #b84000 !important; }
+  .print-page-break { page-break-before: always; }
+}
