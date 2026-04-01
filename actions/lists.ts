@@ -109,6 +109,23 @@ export async function reorderLists(orderedIds: string[]) {
   revalidatePath("/dashboard");
 }
 
+export async function updateCategoryOrder(listId: string, categoryOrder: string[]) {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) redirect("/login");
+
+  const { error } = await supabase
+    .from("gear_lists")
+    .update({ category_order: categoryOrder })
+    .eq("id", listId)
+    .eq("user_id", user.id);
+
+  if (error) throw new Error(error.message);
+  revalidatePath(`/dashboard/lists/${listId}`);
+}
+
 export async function updateList(
   listId: string,
   data: { name: string; description: string | null }

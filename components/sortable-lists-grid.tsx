@@ -34,17 +34,20 @@ export function SortableListsGrid({ initialLists }: { initialLists: GearList[] }
       setActiveId(null);
       if (!over || active.id === over.id) return;
 
-      setLists((prev) => {
-        const oldIndex = prev.findIndex((l) => l.id === active.id);
-        const newIndex = prev.findIndex((l) => l.id === over.id);
-        const reordered = arrayMove(prev, oldIndex, newIndex);
-        startTransition(async () => {
+      const oldIndex = lists.findIndex((l) => l.id === active.id);
+      const newIndex = lists.findIndex((l) => l.id === over.id);
+      const reordered = arrayMove(lists, oldIndex, newIndex);
+
+      setLists(reordered);
+      startTransition(async () => {
+        try {
           await reorderLists(reordered.map((l) => l.id));
-        });
-        return reordered;
+        } catch (e) {
+          console.error("Failed to reorder lists:", e);
+        }
       });
     },
-    []
+    [lists]
   );
 
   const activeList = activeId ? lists.find((l) => l.id === activeId) : null;

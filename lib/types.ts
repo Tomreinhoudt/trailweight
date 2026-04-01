@@ -5,6 +5,7 @@ export interface GearList {
   user_id: string;
   name: string;
   description: string | null;
+  category_order: string[];
   created_at: string;
   updated_at: string;
   gear_items?: GearItem[];
