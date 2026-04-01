@@ -27,6 +27,10 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
+      {/* Apply saved theme before first paint to prevent flash */}
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: `(function(){try{if(localStorage.getItem('tw-theme')==='light'){document.documentElement.classList.add('light');}}catch(e){}})()` }} />
+      </head>
       <body
         className={`${chakraPetch.variable} ${jetbrainsMono.variable} ${dmSans.variable} font-sans bg-field-bg text-ink-1 antialiased`}
       >

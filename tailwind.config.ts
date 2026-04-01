@@ -1,5 +1,9 @@
 import type { Config } from "tailwindcss";
 
+// Colors are defined as CSS variables (space-separated RGB) in globals.css
+// The <alpha-value> placeholder lets Tailwind opacity modifiers work: bg-volt/40
+const v = (name: string) => `rgb(var(${name}) / <alpha-value>)`;
+
 const config: Config = {
   content: [
     "./pages/**/*.{js,ts,jsx,tsx,mdx}",
@@ -10,32 +14,32 @@ const config: Config = {
     extend: {
       colors: {
         field: {
-          bg: "#0C0F0D",
-          surface: "#111712",
-          card: "#172019",
-          elevated: "#1D2A21",
-          border: "#253228",
-          "border-strong": "#2E4036",
+          bg:             v("--color-field-bg"),
+          surface:        v("--color-field-surface"),
+          card:           v("--color-field-card"),
+          elevated:       v("--color-field-elevated"),
+          border:         v("--color-field-border"),
+          "border-strong": v("--color-field-border-strong"),
         },
         volt: {
-          DEFAULT: "#C8ED40",
-          dim: "#9BBB2C",
-          muted: "#1A2D08",
+          DEFAULT: v("--color-volt"),
+          dim:     v("--color-volt-dim"),
+          muted:   v("--color-volt-muted"),
         },
         ember: {
-          DEFAULT: "#F25C20",
-          muted: "#351508",
+          DEFAULT: v("--color-ember"),
+          muted:   v("--color-ember-muted"),
         },
         ink: {
-          1: "#E8F0E4",
-          2: "#9BBF9D",
-          3: "#627A64",
+          1: v("--color-ink-1"),
+          2: v("--color-ink-2"),
+          3: v("--color-ink-3"),
         },
       },
       fontFamily: {
         display: ["var(--font-chakra)", "monospace"],
-        mono: ["var(--font-jetbrains)", "monospace"],
-        sans: ["var(--font-dm-sans)", "sans-serif"],
+        mono:    ["var(--font-jetbrains)", "monospace"],
+        sans:    ["var(--font-dm-sans)", "sans-serif"],
       },
     },
   },

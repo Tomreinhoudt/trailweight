@@ -2,48 +2,100 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ─── Color tokens (space-separated RGB for Tailwind alpha support) ─────────── */
+
+:root {
+  /* Dark mode — default */
+  --color-field-bg:           12 15 13;
+  --color-field-surface:      17 23 18;
+  --color-field-card:         23 32 25;
+  --color-field-elevated:     29 42 33;
+  --color-field-border:       37 50 40;
+  --color-field-border-strong: 46 64 54;
+
+  --color-volt:               200 237 64;
+  --color-volt-dim:           155 187 44;
+  --color-volt-muted:         26 45 8;
+
+  --color-ember:              242 92 32;
+  --color-ember-muted:        53 21 8;
+
+  --color-ink-1:              232 240 228;
+  --color-ink-2:              155 191 157;
+  --color-ink-3:              98 122 100;
+}
+
+/* Light mode — applied when .light class is on <html> */
+.light {
+  --color-field-bg:           244 241 236;
+  --color-field-surface:      234 230 224;
+  --color-field-card:         255 255 255;
+  --color-field-elevated:     237 233 227;
+  --color-field-border:       212 207 201;
+  --color-field-border-strong: 181 174 166;
+
+  --color-volt:               200 237 64;
+  --color-volt-dim:           155 187 44;
+  --color-volt-muted:         232 245 192;
+
+  --color-ember:              242 92 32;
+  --color-ember-muted:        255 235 224;
+
+  --color-ink-1:              26 32 24;
+  --color-ink-2:              74 94 69;
+  --color-ink-3:              122 143 114;
+}
+
+/* ─── Base styles ────────────────────────────────────────────────────────────── */
+
 @layer base {
   * {
-    border-color: theme('colors.field.border');
+    border-color: rgb(var(--color-field-border));
   }
 
   html {
-    background-color: #0C0F0D;
+    background-color: rgb(var(--color-field-bg));
   }
 
   body {
-    background-color: #0C0F0D;
-    color: theme('colors.ink.1');
+    background-color: rgb(var(--color-field-bg));
+    color: rgb(var(--color-ink-1));
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
 
   ::-webkit-scrollbar { width: 6px; height: 6px; }
-  ::-webkit-scrollbar-track { background: #111712; }
-  ::-webkit-scrollbar-thumb { background: #2E4036; border-radius: 3px; }
-  ::-webkit-scrollbar-thumb:hover { background: #C8ED40; }
+  ::-webkit-scrollbar-track { background: rgb(var(--color-field-surface)); }
+  ::-webkit-scrollbar-thumb { background: rgb(var(--color-field-border-strong)); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: rgb(var(--color-volt)); }
 }
+
+/* ─── Topographic background ─────────────────────────────────────────────────── */
 
 .topo-bg {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='900' height='600'%3E%3Cpath d='M-50%2C300 C80%2C220 180%2C360 300%2C280 C420%2C200 520%2C340 650%2C260 C760%2C190 840%2C300 950%2C230' fill='none' stroke='%231E2E24' stroke-width='1.2'/%3E%3Cpath d='M-50%2C380 C80%2C300 180%2C440 300%2C360 C420%2C280 520%2C420 650%2C340 C760%2C270 840%2C380 950%2C310' fill='none' stroke='%231A2820' stroke-width='0.8'/%3E%3Cpath d='M-50%2C220 C80%2C140 180%2C280 300%2C200 C420%2C120 520%2C260 650%2C180 C760%2C110 840%2C220 950%2C150' fill='none' stroke='%231A2820' stroke-width='0.8'/%3E%3Cpath d='M-50%2C460 C80%2C380 180%2C520 300%2C440 C420%2C360 520%2C500 650%2C420 C760%2C350 840%2C460 950%2C390' fill='none' stroke='%23162018' stroke-width='0.5'/%3E%3Cpath d='M-50%2C140 C80%2C60 180%2C200 300%2C120 C420%2C40 520%2C180 650%2C100 C760%2C30 840%2C140 950%2C70' fill='none' stroke='%23162018' stroke-width='0.5'/%3E%3C/svg%3E");
   background-size: 900px 600px;
 }
 
+/* Light mode: map-like lines on parchment */
+.light .topo-bg {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='900' height='600'%3E%3Cpath d='M-50%2C300 C80%2C220 180%2C360 300%2C280 C420%2C200 520%2C340 650%2C260 C760%2C190 840%2C300 950%2C230' fill='none' stroke='%23B8C8B0' stroke-width='1.2'/%3E%3Cpath d='M-50%2C380 C80%2C300 180%2C440 300%2C360 C420%2C280 520%2C420 650%2C340 C760%2C270 840%2C380 950%2C310' fill='none' stroke='%23C4D0BC' stroke-width='0.8'/%3E%3Cpath d='M-50%2C220 C80%2C140 180%2C280 300%2C200 C420%2C120 520%2C260 650%2C180 C760%2C110 840%2C220 950%2C150' fill='none' stroke='%23C4D0BC' stroke-width='0.8'/%3E%3Cpath d='M-50%2C460 C80%2C380 180%2C520 300%2C440 C420%2C360 520%2C500 650%2C420 C760%2C350 840%2C460 950%2C390' fill='none' stroke='%23CDD8C6' stroke-width='0.5'/%3E%3Cpath d='M-50%2C140 C80%2C60 180%2C200 300%2C120 C420%2C40 520%2C180 650%2C100 C760%2C30 840%2C140 950%2C70' fill='none' stroke='%23CDD8C6' stroke-width='0.5'/%3E%3C/svg%3E");
+}
+
+/* ─── Volt glow ──────────────────────────────────────────────────────────────── */
+
 .volt-glow {
   text-shadow: 0 0 24px rgba(200, 237, 64, 0.35);
 }
 
+.light .volt-glow {
+  text-shadow: none;
+}
+
+/* ─── Print styles ───────────────────────────────────────────────────────────── */
+
 @media print {
   nav, .no-print { display: none !important; }
   body { background: white !important; color: #111 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-  .bg-field-bg, .bg-field-surface, .bg-field-card, .bg-field-elevated { background: white !important; }
-  .text-volt, .volt-glow { color: #5a8f00 !important; text-shadow: none !important; }
-  .text-ink-1 { color: #111 !important; }
-  .text-ink-2 { color: #444 !important; }
-  .text-ink-3 { color: #777 !important; }
-  .border-field-border { border-color: #ddd !important; }
-  .bg-volt-muted { background: #f0f7d0 !important; }
-  .bg-ember-muted { background: #fff0e8 !important; }
-  .text-ember { color: #b84000 !important; }
-  .print-page-break { page-break-before: always; }
+  .volt-glow { text-shadow: none !important; }
 }

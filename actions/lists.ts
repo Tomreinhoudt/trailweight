@@ -168,9 +168,7 @@ export async function duplicateList(listId: string) {
       user_id: user.id,
       name: `${original.name} (copy)`,
       description: original.description,
-      category_order: original.category_order,
-      weight_target_grams: original.weight_target_grams,
-      is_public: false,
+      category_order: original.category_order ?? [],
     })
     .select()
     .single();
