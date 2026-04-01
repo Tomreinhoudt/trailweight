@@ -27,8 +27,9 @@ const LIGHT: Record<string, string> = {
   "--color-field-elevated":     "237 233 227",
   "--color-field-border":       "212 207 201",
   "--color-field-border-strong":"181 174 166",
-  "--color-volt":               "200 237 64",
-  "--color-volt-dim":           "155 187 44",
+  // #3D6B00 — same yellow-green hue as volt, darkened for ~5.2:1 contrast on parchment (WCAG AA)
+  "--color-volt":               "61 107 0",
+  "--color-volt-dim":           "46 82 0",
   "--color-volt-muted":         "232 245 192",
   "--color-ember":              "242 92 32",
   "--color-ember-muted":        "255 235 224",

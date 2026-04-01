@@ -34,8 +34,9 @@
   --color-field-border:       212 207 201;
   --color-field-border-strong: 181 174 166;
 
-  --color-volt:               200 237 64;
-  --color-volt-dim:           155 187 44;
+  /* Volt darkened for light backgrounds — #3D6B00 gives ~5.2:1 contrast on parchment (WCAG AA) */
+  --color-volt:               61 107 0;
+  --color-volt-dim:           46 82 0;
   --color-volt-muted:         232 245 192;
 
   --color-ember:              242 92 32;
