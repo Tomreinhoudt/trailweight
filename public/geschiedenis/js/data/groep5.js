@@ -12,8 +12,10 @@ window.CURRICULUM.push({
   omschrijving: "Reis van de hunebedden naar de Romeinse soldaten en de kastelen van de ridders!",
   tijdvakken: [1, 2, 3],
   doelen: [
-    "Je kent de tijdbalk met de tien tijdvakken.",
+    "Je kent de tijdbalk met de tien tijdvakken en weet dat 100 jaar een eeuw heet.",
+    "Je weet wat historische bronnen zijn en wat een archeoloog doet.",
     "Je weet wat hunebedden zijn en wie ze bouwden.",
+    "Je weet wat de oude Grieken ons brachten, zoals de democratie.",
     "Je weet dat de Romeinen lang geleden in Nederland waren.",
     "Je weet hoe monniken en ridders leefden.",
     "Je kunt gebeurtenissen in de goede volgorde zetten."
@@ -49,6 +51,27 @@ window.CURRICULUM.push({
         },
         {
           type: "uitleg",
+          titel: "Honderd jaar = een eeuw",
+          beeld: "💯",
+          tekst: [
+            "Een periode van <strong>100 jaar</strong> noemen we een <strong>eeuw</strong>.",
+            "Als iets '400 jaar geleden' gebeurde, zeg je ook wel: <strong>vier eeuwen</strong> geleden.",
+            "Jij leeft nu in de <strong>21e eeuw</strong>. Je opa en oma zijn geboren in de 20e eeuw."
+          ]
+        },
+        {
+          type: "quiz",
+          vraag: "Hoeveel jaar duurt één eeuw?",
+          opties: [
+            { tekst: "10 jaar", beeld: "🔟" },
+            { tekst: "100 jaar", beeld: "💯" },
+            { tekst: "1000 jaar", beeld: "😱" }
+          ],
+          juist: 1,
+          uitleg: "Een eeuw is 100 jaar. Tien eeuwen samen (1000 jaar) heten een millennium!"
+        },
+        {
+          type: "uitleg",
           titel: "Voor en na Christus",
           beeld: "🗓️",
           tekst: [
@@ -73,6 +96,77 @@ window.CURRICULUM.push({
           beeld: "🗓️",
           juist: true,
           uitleg: "Goed! Bij 'voor Christus' tellen we terug: hoe groter het getal, hoe langer geleden."
+        }
+      ]
+    },
+    {
+      id: "g5bronnen",
+      titel: "Speuren naar vroeger",
+      emoji: "🔍",
+      duur: "±10 min",
+      stappen: [
+        {
+          type: "uitleg",
+          titel: "Hoe weten we dat allemaal?",
+          beeld: "🔍",
+          tekst: [
+            "Niemand van nu was erbij, duizenden jaren geleden. Hoe weten we dan hoe het toen was?",
+            "Door <strong>bronnen</strong>: alles wat is overgebleven uit het verleden en ons iets vertelt.",
+            "Bronnen zijn bijvoorbeeld <strong>voorwerpen</strong> (potten, munten), <strong>gebouwen</strong>, <strong>afbeeldingen</strong> (schilderijen, foto's) en <strong>geschreven teksten</strong> (brieven, dagboeken)."
+          ],
+          weetje: "Ook verhalen van opa en oma over vroeger zijn bronnen. Dat heet een mondelinge bron."
+        },
+        {
+          type: "quiz",
+          vraag: "Wat is een historische bron?",
+          opties: [
+            { tekst: "Iets uit het verleden waarvan we over vroeger leren", beeld: "🏺" },
+            { tekst: "Een fontein met heel oud water", beeld: "⛲" },
+            { tekst: "Alleen hele dikke geschiedenisboeken", beeld: "📚" }
+          ],
+          juist: 0,
+          uitleg: "Een pot, een munt, een foto, een brief: alles uit het verleden dat ons iets vertelt, is een bron."
+        },
+        {
+          type: "uitleg",
+          titel: "De archeoloog: speurneus in de grond",
+          beeld: "⛏️",
+          tekst: [
+            "Een <strong>archeoloog</strong> graaft heel voorzichtig in de grond, op zoek naar sporen van vroeger.",
+            "Scherven, botten, munten, oude muren: elk vondstje is een puzzelstukje van het verleden.",
+            "Veel vondsten kun je bekijken in het <strong>museum</strong>. Daar worden bronnen veilig bewaard."
+          ],
+          weetje: "De tijd voordat mensen konden schrijven heet de prehistorie. Daaruit bestaan alleen voorwerpen als bron, geen teksten!"
+        },
+        {
+          type: "quiz",
+          vraag: "Wie graaft oude spullen op om het verleden te onderzoeken?",
+          raster: true,
+          opties: [
+            { tekst: "Een archeoloog", beeld: "⛏️" },
+            { tekst: "Een piloot", beeld: "✈️" },
+            { tekst: "Een bakker", beeld: "🥖" },
+            { tekst: "Een kapper", beeld: "✂️" }
+          ],
+          juist: 0,
+          uitleg: "De archeoloog! Die onderzoekt voorwerpen uit de grond, laagje voor laagje."
+        },
+        {
+          type: "match",
+          opdracht: "Wat leer je van elke bron? Maak de paren!",
+          paren: [
+            [{ tekst: "Oude munt", beeld: "🪙" }, { tekst: "wie er de baas was", beeld: "👑" }],
+            [{ tekst: "Etensresten en botten", beeld: "🦴" }, { tekst: "wat mensen aten", beeld: "🍖" }],
+            [{ tekst: "Oude foto", beeld: "📷" }, { tekst: "hoe mensen eruitzagen", beeld: "👒" }],
+            [{ tekst: "Dagboek", beeld: "📔" }, { tekst: "wat iemand meemaakte en dacht", beeld: "💭" }]
+          ]
+        },
+        {
+          type: "waarnietwaar",
+          stelling: "Uit de prehistorie bestaan geen geschreven bronnen.",
+          beeld: "📜",
+          juist: true,
+          uitleg: "Klopt! 'Prehistorie' betekent: vóór het schrift. Alles wat we weten komt uit voorwerpen, zoals de hunebedden. Daarover gaat de volgende les!"
         }
       ]
     },
@@ -143,6 +237,74 @@ window.CURRICULUM.push({
           beeld: "🧌",
           juist: false,
           uitleg: "Vroeger dachten mensen dat echt! Maar het waren gewone mensen: sterke, slimme boeren."
+        }
+      ]
+    },
+    {
+      id: "g5grieken",
+      titel: "De oude Grieken",
+      emoji: "🏛️",
+      duur: "±10 min",
+      stappen: [
+        {
+          type: "uitleg",
+          titel: "Slimme koppen aan zee",
+          beeld: "🏛️",
+          tekst: [
+            "Zo'n 2500 jaar geleden woonden de <strong>oude Grieken</strong> in Griekenland, ver van Nederland.",
+            "Ze woonden in <strong>stadstaten</strong>: steden met eigen regels, zoals <strong>Athene</strong> en <strong>Sparta</strong>.",
+            "Ze bouwden prachtige <strong>tempels</strong> voor hun goden en waren dol op verhalen, sport en slimme vragen."
+          ],
+          weetje: "Tijdvak 2 heet 'tijd van Grieken en Romeinen'. De Grieken waren er eerst; de Romeinen namen later veel van hun ideeën over."
+        },
+        {
+          type: "uitleg",
+          titel: "De uitvinding van de democratie",
+          beeld: "🗳️",
+          tekst: [
+            "In Athene bedachten ze iets bijzonders: de burgers mochten <strong>meebeslissen</strong> over de stad.",
+            "Dat heet <strong>democratie</strong>: het volk regeert. Nederland is nu ook een democratie!",
+            "Eerlijk was het nog niet helemaal: vrouwen en slaven mochten in Athene níet meestemmen."
+          ]
+        },
+        {
+          type: "quiz",
+          vraag: "Wat betekent democratie?",
+          opties: [
+            { tekst: "Het volk mag meebeslissen", beeld: "🗳️" },
+            { tekst: "Eén koning beslist alles", beeld: "👑" },
+            { tekst: "Niemand mag iets beslissen", beeld: "🤷" }
+          ],
+          juist: 0,
+          uitleg: "Democratie = het volk regeert. Die Griekse uitvinding gebruiken wij nog elke dag."
+        },
+        {
+          type: "uitleg",
+          titel: "Sport en wetenschap",
+          beeld: "🏅",
+          tekst: [
+            "Eens in de vier jaar hielden de Grieken grote sportwedstrijden ter ere van de god Zeus: de <strong>Olympische Spelen</strong>.",
+            "Griekse denkers (<strong>filosofen</strong>) stelden overal vragen over: Hoe werkt de wereld? Wat is eerlijk?",
+            "Zo begon de <strong>wetenschap</strong>. Ook het theater hebben we van de Grieken!"
+          ],
+          weetje: "De Olympische Spelen bestaan nog steeds, al meer dan 2500 jaar later!"
+        },
+        {
+          type: "match",
+          opdracht: "Wat gaven de Grieken ons? Maak de paren!",
+          paren: [
+            [{ tekst: "Democratie", beeld: "🗳️" }, { tekst: "burgers beslissen mee", beeld: "🙋" }],
+            [{ tekst: "Olympische Spelen", beeld: "🏅" }, { tekst: "sport voor de god Zeus", beeld: "⚡" }],
+            [{ tekst: "Filosofen", beeld: "🤔" }, { tekst: "het begin van de wetenschap", beeld: "🔬" }],
+            [{ tekst: "Theater", beeld: "🎭" }, { tekst: "toneelspelen", beeld: "😄" }]
+          ]
+        },
+        {
+          type: "waarnietwaar",
+          stelling: "De Olympische Spelen zijn bedacht door de oude Grieken.",
+          beeld: "🏅",
+          juist: true,
+          uitleg: "Klopt! En nog iets: hierna leerden de Romeinen veel van de Grieken. Die komen in de volgende les naar Nederland!"
         }
       ]
     },
@@ -306,6 +468,7 @@ window.CURRICULUM.push({
           beeld: "🧠",
           tekst: [
             "Je hebt drie tijdvakken leren kennen: <strong>jagers en boeren</strong>, <strong>Grieken en Romeinen</strong> en <strong>monniken en ridders</strong>.",
+            "En je weet hoe we dat allemaal wéten: door <strong>bronnen</strong> te onderzoeken!",
             "Tijd voor de grote test. Laat zien wat je weet!"
           ]
         },
@@ -315,9 +478,32 @@ window.CURRICULUM.push({
           items: [
             { tekst: "Jagers en verzamelaars", beeld: "🏹" },
             { tekst: "Hunebedbouwers", beeld: "🪨" },
+            { tekst: "Oude Grieken", beeld: "🏛️" },
             { tekst: "Romeinse soldaten", beeld: "🛡️" },
             { tekst: "Ridders en monniken", beeld: "🏰" }
           ]
+        },
+        {
+          type: "quiz",
+          vraag: "Welke bron vertelt ons iets over de prehistorie (vóór het schrift)?",
+          opties: [
+            { tekst: "Opgegraven voorwerpen, zoals scherven", beeld: "🏺" },
+            { tekst: "Oude kranten", beeld: "📰" },
+            { tekst: "Filmpjes op internet", beeld: "🎬" }
+          ],
+          juist: 0,
+          uitleg: "Uit de prehistorie zijn er geen teksten. Archeologen leren alles uit voorwerpen in de grond."
+        },
+        {
+          type: "quiz",
+          vraag: "Welke uitvinding van de Grieken gebruiken wij nog steeds?",
+          opties: [
+            { tekst: "De democratie", beeld: "🗳️" },
+            { tekst: "De stoommachine", beeld: "🚂" },
+            { tekst: "De televisie", beeld: "📺" }
+          ],
+          juist: 0,
+          uitleg: "De democratie! Burgers die meebeslissen: dat bedachten ze in Athene."
         },
         {
           type: "match",

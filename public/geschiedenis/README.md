@@ -26,13 +26,28 @@ Er gaan geen gegevens naar een server.
 
 Het curriculum is gebouwd op het kader van de **tien tijdvakken**
 (commissie-De Rooy) en de **SLO-kerndoelen** voor Oriëntatie op jezelf en de
-wereld (m.n. kerndoel 51: tijdbalk en tijdvakken, kerndoel 52: kenmerkende
-aspecten, kerndoel 53: belangrijke personen en gebeurtenissen).
+wereld, domein Tijd:
+
+- **Kerndoel 51** — omgaan met eenvoudige **historische bronnen** en
+  aanduidingen van tijd en tijdsindeling: vroeger/nu/later en de eigen
+  tijdlijn (groep 4), tijdbalk, eeuw en v.Chr./n.Chr. (groep 5, les 1),
+  soorten bronnen, archeologie en prehistorie (groep 5, les "Speuren naar
+  vroeger"), en terugkerende bron-momenten in hogere groepen (schilderijen
+  als bron in groep 7, het dagboek van Anne Frank als bron in groep 8).
+- **Kerndoel 52** — kenmerkende aspecten van alle **tien tijdvakken**,
+  verdeeld over de groepen (zie tabel), inclusief de Grieken (democratie,
+  wetenschap) én de Romeinen in tijdvak 2.
+- **Kerndoel 53** — belangrijke personen en gebeurtenissen uit de
+  Nederlandse geschiedenis, met vensters uit de **Canon van Nederland**
+  (hunebedden, de limes, Willibrord, de Hanze, Willem van Oranje,
+  Rembrandt, Michiel de Ruyter, slavernij, kinderarbeid, Anne Frank,
+  de watersnood, Europa) en verbindingen met de wereldgeschiedenis
+  (Columbus, Luther, Napoleon, de wereldoorlogen, de EU).
 
 | Groep | Module | Tijdvakken | Accent |
 |---|---|---|---|
 | 4 | Vroeger en nu | intro + 1 | Tijdsbesef: vroeger/nu/later, eigen tijdlijn, jagers & eerste boeren |
-| 5 | Van jagers tot ridders | 1–3 | Tijdbalk, hunebedden, Romeinen (limes), monniken & ridders |
+| 5 | Van jagers tot ridders | 1–3 | Tijdbalk & eeuw, bronnen & archeologie, hunebedden, Grieken (democratie), Romeinen (limes), monniken & ridders |
 | 6 | Steden, ontdekkers en hervormers | 4–5 | Stadsrechten, gilden, Hanze, boekdrukkunst, Columbus, Willem van Oranje & de Opstand |
 | 7 | De Gouden Eeuw en daarna | 6–8 | Republiek, VOC én slavernij, Rembrandt/De Ruyter, Franse tijd, stoommachines & kinderarbeid |
 | 8 | De twintigste eeuw | 9–10 | Wereldoorlogen, Anne Frank, wederopbouw, Watersnoodramp, Europa + **meesterproef over alle tijdvakken** |
@@ -44,7 +59,7 @@ De moeilijkheid loopt op met de leeftijd:
 - **Groep 7/8**: meer diepgang, ook de schaduwkanten van de geschiedenis
   (slavernij, kinderarbeid, Jodenvervolging) leeftijdsgericht behandeld.
 
-Elke module heeft expliciete **leerdoelen** en ±5 korte lessen (±10 min) met
+Elke module heeft expliciete **leerdoelen** en 5 à 7 korte lessen (±10 min) met
 een vaste opbouw: uitlegkaarten afgewisseld met interactieve oefeningen.
 Lessen binnen een module worden lineair vrijgespeeld.
 

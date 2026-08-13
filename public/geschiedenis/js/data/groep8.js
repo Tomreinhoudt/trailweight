@@ -122,7 +122,7 @@ window.CURRICULUM.push({
           tekst: [
             "De nazi's vervolgden de <strong>Joden</strong>. Joodse mensen mochten steeds minder en werden weggevoerd naar <strong>concentratiekampen</strong>, waar de meesten werden vermoord. Dit noemen we de <strong>Holocaust</strong>.",
             "Het Joodse meisje <strong>Anne Frank</strong> zat met haar familie ondergedoken in het <strong>Achterhuis</strong> in Amsterdam. Ze schreef daar haar beroemde <strong>dagboek</strong>.",
-            "Anne werd verraden en stierf in een kamp. Haar dagboek wordt nu over de hele wereld gelezen, zodat we nooit vergeten."
+            "Anne werd verraden en stierf in een kamp. Haar dagboek wordt nu over de hele wereld gelezen, zodat we nooit vergeten. Het is een van de beroemdste <strong>historische bronnen</strong> ter wereld."
           ],
           weetje: "Van de 140.000 Joden in Nederland overleefden er ongeveer 38.000 de oorlog. Sommige Nederlanders hielpen onderduikers; dat was levensgevaarlijk verzet."
         },

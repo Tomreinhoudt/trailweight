@@ -172,7 +172,8 @@ window.CURRICULUM.push({
           tekst: [
             "Rijke burgers lieten zich graag schilderen. De beroemdste schilder was <strong>Rembrandt van Rijn</strong>.",
             "In <strong>1642</strong> schilderde hij <strong>De Nachtwacht</strong>: een enorme groepsfoto-in-verf van Amsterdamse schutters.",
-            "Rembrandt was een meester in <strong>licht en donker</strong>. Zijn schilderijen lijken wel toneel!"
+            "Rembrandt was een meester in <strong>licht en donker</strong>. Zijn schilderijen lijken wel toneel!",
+            "Schilderijen uit die tijd zijn nu belangrijke <strong>historische bronnen</strong>: ze laten zien hoe mensen, kleren en huizen er toen uitzagen."
           ],
           weetje: "De Nachtwacht hangt in het Rijksmuseum in Amsterdam en is bijna 4 meter breed."
         },
